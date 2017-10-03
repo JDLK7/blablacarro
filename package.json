@@ -1,0 +1,19 @@
+{
+  "name": "blablacarro",
+  "version": "1.0.0",
+  "description": "App para compartir carro con otros usuarios",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JDLK7/blablacarro.git"
+  },
+  "author": "Jose Domenech Leal",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/JDLK7/blablacarro/issues"
+  },
+  "homepage": "https://github.com/JDLK7/blablacarro#readme"
+}

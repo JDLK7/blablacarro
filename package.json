@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/JDLK7/blablacarro/issues"
   },
-  "homepage": "https://github.com/JDLK7/blablacarro#readme"
+  "homepage": "https://github.com/JDLK7/blablacarro#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "faker": "^4.1.0",
+    "pouchdb": "^6.3.4",
+    "pouchdb-find": "^6.3.4"
+  }
 }

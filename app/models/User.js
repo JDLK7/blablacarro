@@ -13,23 +13,23 @@ class User {
     save() {
         var user = this
 
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve, reject => {
             db.put({
                 _id: crypto.createHash('sha256').update(user.login).digest('hex'),
                 type: 'user',
                 login: user.login,
                 password: crypto.createHash('sha256').update(user.password).digest('hex'),
-            }).then((result) => {
+            }).then(result => {
                 console.log('User has been registered')
 
                 resolve({
                     status: 201,
                     message: 'User has been registered'
                 })
-            }).catch((error) => {
+            }).catch(error => {
                 console.log('User already exists')
                 
-                resolve({
+                reject({
                     status: 409,
                     message: 'User already exists'
                 })
@@ -41,7 +41,7 @@ class User {
 User.fetchAll = () => {
     return new Promise((resolve, reject) => {
         db.find({
-            selector: { type: 'user'},
+            selector: { type: 'user' },
             fields: ['_id', 'login']
         }).then((result) => {
             resolve({
@@ -57,11 +57,9 @@ User.fetchAll = () => {
     })
 }
 
-User.find = (login) => {
-    var loginHash = crypto.createHash('sha256').update(login).digest('hex')
-
+User.find = (id) => {
     return new Promise((resolve, reject) => {
-        db.get(loginHash).then((user) => {
+        db.get(id).then((user) => {
             delete user.password
 
             resolve({
@@ -78,6 +76,5 @@ User.find = (login) => {
         })
     })
 }
-
 
 module.exports = User

@@ -8,11 +8,16 @@ var faker = require('faker');
 
 function generateData() {
     for(var i = 0; i < 10; i++) {
-        db.post({
+        db.put({
+            _id: ('city' + i),
             type: 'city',
             name: faker.address.city(),
             zipCode: faker.address.zipCode(),
             state: faker.address.state()
+        }).then(() => {
+            console.log('Ciudades autogeneradas')
+        }).catch(() => {
+            console.log('Error al autogenerar las ciudades')
         })
     }
 }
@@ -32,7 +37,7 @@ City.find = (id) => {
         db.find({
             selector: { type: 'city', _id: id },
             fields: ['_id', 'name', 'zipCode', 'state']
-        }).then((result) => {
+        }).then(result => {
             resolve({
                 status: 200,
                 city: result.docs
@@ -46,12 +51,12 @@ City.fetchAll = () => {
         db.find({
             selector: { type: 'city'},
             fields: ['_id', 'name', 'zipCode', 'state']
-        }).then((result) => {
+        }).then(result => {
             resolve({
                 status: 200,
                 cities: result.docs
             })
-        }).catch((err) => {
+        }).catch(err => {
             reject({
                 status: 404,
                 message: "¿?"

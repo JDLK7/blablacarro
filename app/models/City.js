@@ -2,9 +2,7 @@ var PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
 var db = new PouchDB('blablacarro')
 
-var crypto = require('crypto')
-
-var faker = require('faker');
+var faker = require('faker')
 
 function generateData() {
     for(var i = 0; i < 10; i++) {
@@ -22,7 +20,7 @@ function generateData() {
     }
 }
 
-//generateData()
+generateData()
 
 class City {
     constructor(name, zipCode, state) {
@@ -33,7 +31,7 @@ class City {
 }
 
 City.find = id => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         db.find({
             selector: { type: 'city', _id: id },
             fields: ['_id', 'name', 'zipCode', 'state']
@@ -59,7 +57,7 @@ City.fetchAll = () => {
         }).catch(err => {
             reject({
                 status: 404,
-                message: "¿?"
+                message: err
             })
         })
     })

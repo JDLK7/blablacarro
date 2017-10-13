@@ -19,14 +19,14 @@ class User {
                 type: 'user',
                 login: user.login,
                 password: crypto.createHash('sha256').update(user.password).digest('hex'),
-            }).then(result => {
+            }).then(() => {
                 console.log('User has been registered')
 
                 resolve({
                     status: 201,
                     message: 'User has been registered'
                 })
-            }).catch(error => {
+            }).catch(() => {
                 console.log('User already exists')
                 
                 reject({
@@ -43,15 +43,15 @@ User.fetchAll = () => {
         db.find({
             selector: { type: 'user' },
             fields: ['_id', 'login']
-        }).then((result) => {
+        }).then(result => {
             resolve({
                 status: 200,
                 users: result.docs
             })
-        }).catch((err) => {
+        }).catch(err => {
             reject({
                 status: 404,
-                message: "¿?"
+                message: err
             })
         })
     })
@@ -59,19 +59,19 @@ User.fetchAll = () => {
 
 User.find = id => {
     return new Promise((resolve, reject) => {
-        db.get(id).then((user) => {
+        db.get(id).then(user => {
             delete user.password
 
             resolve({
                 status: 200,
                 user: user
             })
-        }).catch((err) => {
+        }).catch(() => {
             console.log('User does not exist')
 
             reject({
                 status: 404,
-                message: "User does not exist"
+                message: 'User does not exist'
             })
         })
     })
@@ -87,17 +87,17 @@ User.findByLogin = login => {
             resolve({
                 user: result.docs[0]
             })
-        }).catch((err) => {
+        }).catch(err => {
             reject({
                 status: 404,
-                message: "¿?"
+                message: err
             })
         })
     })
 }
 
 User.checkAuthentication = (login, password) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         db.find({
             selector: {
                 type: 'user',

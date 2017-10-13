@@ -51,8 +51,19 @@ router.post('/login', (req, res) => {
 
 router.get('/users', (req, res) => {
     User.fetchAll().then(result => {
+        var response = []
+
+        result.users.forEach(user => {
+            user._links = {
+                user: {
+                    href: '/api/users/'+user._id
+                }
+            }
+            response.push(user)
+        })
+
         res.status(result.status)
-        res.send(result.users)
+        res.send(response)
     }).catch(err => {
         res.status(500)
         res.send(err)
@@ -83,6 +94,12 @@ router.get('/users/:id', (req, res) => {
     var id = req.params.id
 
     User.find(id).then(result => {
+        result.user._links = {
+            journeys: {
+                href: '/api/users/'+result.user._id+'/journeys'
+            },
+        }
+
         res.status(result.status)
         res.send(result.user)
     }).catch(err => {
@@ -93,6 +110,17 @@ router.get('/users/:id', (req, res) => {
 
 router.get('/cities', (req, res) => {
     City.fetchAll().then(result => {
+        var response = []
+
+        result.cities.forEach(city => {
+            city._links = {
+                city: {
+                    href: '/api/cities/'+city._id
+                }
+            }
+            response.push(city)
+        })
+
         res.status(result.status)
         res.send(result.cities)
     }).catch(err => {
@@ -103,6 +131,12 @@ router.get('/cities', (req, res) => {
 
 router.get('/cities/:id', (req, res) => {
     City.find(req.params.id).then(result => {
+        result.city._links = {
+            journeys: {
+                href: '/api/cities/'+result.city._id+'/journeys'
+            }
+        }
+
         res.status(result.status)
         res.send(result.city)
     })

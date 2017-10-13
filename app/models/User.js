@@ -13,7 +13,7 @@ class User {
     save() {
         var user = this
 
-        return new Promise(resolve, reject => {
+        return new Promise((resolve, reject) => {
             db.put({
                 _id: crypto.createHash('sha256').update(user.login).digest('hex'),
                 type: 'user',
@@ -77,6 +77,25 @@ User.find = id => {
     })
 }
 
+User.findByLogin = login => {
+    return new Promise((resolve, reject) => {
+        db.find({
+            selector: { type: 'user', login: login },
+        }).then(result => {
+            delete result.docs[0].password
+
+            resolve({
+                user: result.docs[0]
+            })
+        }).catch((err) => {
+            reject({
+                status: 404,
+                message: "¿?"
+            })
+        })
+    })
+}
+
 User.checkAuthentication = (login, password) => {
     return new Promise((resolve, reject) => {
         db.find({
@@ -85,10 +104,11 @@ User.checkAuthentication = (login, password) => {
                 login: login
             },
             fields: ['password']
-        }).then(docs => {
+        }).then(result => {
+            var hash = crypto.createHash('sha256').update(password).digest('hex')
+
             resolve({
-                ok: (docs[0].password === 
-                     crypto.createHash('sha256').update(password).digest('hex'))
+                ok: (result.docs[0].password === hash)
             })
         })
     })

@@ -57,7 +57,7 @@ User.fetchAll = () => {
     })
 }
 
-User.find = (id) => {
+User.find = id => {
     return new Promise((resolve, reject) => {
         db.get(id).then((user) => {
             delete user.password
@@ -72,6 +72,23 @@ User.find = (id) => {
             reject({
                 status: 404,
                 message: "User does not exist"
+            })
+        })
+    })
+}
+
+User.checkAuthentication = (login, password) => {
+    return new Promise((resolve, reject) => {
+        db.find({
+            selector: {
+                type: 'user',
+                login: login
+            },
+            fields: ['password']
+        }).then(docs => {
+            resolve({
+                ok: (docs[0].password === 
+                     crypto.createHash('sha256').update(password).digest('hex'))
             })
         })
     })

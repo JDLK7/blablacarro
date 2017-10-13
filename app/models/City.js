@@ -32,7 +32,7 @@ class City {
     }
 }
 
-City.find = (id) => {
+City.find = id => {
     return new Promise((resolve, reject) => {
         db.find({
             selector: { type: 'city', _id: id },

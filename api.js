@@ -1,12 +1,18 @@
 var express = require('express')
 var bodyParser = require('body-parser')
 
+var jwt = require('jwt-simple');
+
 const User = require('./app/models/User.js');
 const City = require('./app/models/City.js');
 const Journey = require('./app/models/Journey.js');
 
 var router = express.Router()
 router.use(bodyParser.json())
+
+router.post('/login', (req, res) => {
+    var data = req.body
+})
 
 router.get('/users', (req, res) => {
     User.fetchAll().then(result => {

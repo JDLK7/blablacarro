@@ -20,7 +20,7 @@ class Journey {
         return new Promise((resolve, reject) => {
             db.post({
                 type: 'journey',
-                cities: data.cities,
+                originCities: data.cities,
                 driver: data.driver,
                 occupants: data.occupants,
                 price: data.price
@@ -90,5 +90,52 @@ Journey.delete = id => {
         })
     })
 }
+
+Journey.getDriverJourneys = id => {
+    return new Promise((resolve, reject) => {
+        db.find({
+            selector: {
+                type: 'journey',
+                driver: id,
+            },
+            fields: ['_id', 'cities', 'occupants', 'price']
+        }).then(result => {
+            resolve({
+                status: 200,
+                journeys: result.docs
+            })
+        }).catch(err => {
+            reject({
+                status: 404,
+                message: err
+            })
+        })
+    })
+}
+/*
+Journey.getCityJourneys = id => {
+    return new Promise((resolve, reject) => {
+        db.find({
+            selector: {
+                type: 'journey',
+                $or: [
+                    { cities: 'nice' },
+                    { cities: 'ok' }
+                ] 
+            },
+            fields: ['_id', 'cities', 'occupants', 'price']
+        }).then(result => {
+            resolve({
+                status: 200,
+                journeys: result.docs
+            })
+        }).catch(err => {
+            reject({
+                status: 404,
+                message: err
+            })
+        })
+    })
+}*/
 
 module.exports = Journey

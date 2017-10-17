@@ -5,6 +5,9 @@ var db = new PouchDB('blablacarro')
 var faker = require('faker')
 
 function generateData() {
+    
+    console.log('Registrando ciudades...')
+
     for(var i = 0; i < 10; i++) {
         db.put({
             _id: ('city' + i),
@@ -14,8 +17,8 @@ function generateData() {
             state: faker.address.state()
         }).then(() => {
             console.log('Ciudades autogeneradas')
-        }).catch(() => {
-            console.log('Error al autogenerar las ciudades')
+        }).catch(err => {
+            console.log('La ciudad ya existe')
         })
     }
 }

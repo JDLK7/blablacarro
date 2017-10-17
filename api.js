@@ -7,6 +7,7 @@ var moment = require('moment')
 const User = require('./app/models/User.js')
 const City = require('./app/models/City.js')
 const Journey = require('./app/models/Journey.js')
+const Car = require('./app/models/Car.js')
 
 var router = express.Router()
 router.use(bodyParser.json())
@@ -74,14 +75,24 @@ router.post('/users', (req, res) => {
     var user = req.body
     
     if(user.login && user.password) {
-        var userModel = new User(user.login, user.password)
-        
-        userModel.save().then(result => {
-            res.status(result.status)
-            res.send(result.message)
-        }).catch(err => {
-            res.status(err.status)
-            res.send(err.message)
+
+        Car.find(user.car).then(carResult => {
+            var userModel = new User(user.login, user.password, carResult.car)
+            
+            userModel.save().then(result => {
+                var response = result.body;
+                response._links = {
+                    user: {
+                        href: '/api/users/' + response.user.id
+                    }
+                }
+
+                res.status(result.status)
+                res.send(result.body)
+            }).catch(err => {
+                res.status(err.status)
+                res.send(err.message)
+            })
         })
     }
     else {
@@ -92,6 +103,15 @@ router.post('/users', (req, res) => {
 
 router.get('/users/:id', (req, res) => {
     var id = req.params.id
+
+    try {
+        checkToken(req.header('Authorization'))
+    }
+    catch(error) {
+        res.status(401)
+        console.log(error)
+        res.send('Invalid token')
+    }
 
     User.find(id).then(result => {
         result.user._links = {
@@ -104,6 +124,27 @@ router.get('/users/:id', (req, res) => {
         res.send(result.user)
     }).catch(err => {
         res.status(err.status)
+        res.send(err.message)
+    })
+})
+
+router.get('/users/:id/journeys', (req, res) => {
+    var id = req.params.id
+    
+    try {
+        checkToken(req.header('Authorization'))
+    }
+    catch(error) {
+        res.status(401)
+        console.log(error)
+        res.send('Invalid token')
+    }
+
+    Journey.getDriverJourneys(id).then(result => {
+        res.status(result.status)
+        res.send(result.journeys)
+    }).catch(err => {
+        res.status(400)
         res.send(err.message)
     })
 })
@@ -139,6 +180,37 @@ router.get('/cities/:id', (req, res) => {
 
         res.status(result.status)
         res.send(result.city)
+    })
+})
+
+router.get('/cities/:id/journeys', (req, res) => {
+    var id = req.params.id
+
+    try {
+        checkToken(req.header('Authorization'))
+    }
+    catch(error) {
+        res.status(401)
+        console.log(error)
+        res.send('Invalid token')
+    }
+
+    Journey.getCityJourneys(id).then(result => {
+        res.status(result.status)
+        res.send(result.journeys)
+    }).catch(err => {
+        res.status(400)
+        res.send(err.message)
+    })
+})
+
+router.get('/cars', (req, res) => {
+    Car.fetchAll().then(result => {
+        res.status(result.status)
+        res.send(result.cars)
+    }).catch(err => {
+        res.status(err.status)
+        res.send(err.message)
     })
 })
 

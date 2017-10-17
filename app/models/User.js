@@ -5,9 +5,10 @@ var db = new PouchDB('blablacarro')
 var crypto = require('crypto')
 
 class User {
-    constructor(login, password) {
+    constructor(login, password, car = null) {
         this.login = login
         this.password = password
+        this.car = car
     }
 
     save() {
@@ -19,12 +20,16 @@ class User {
                 type: 'user',
                 login: user.login,
                 password: crypto.createHash('sha256').update(user.password).digest('hex'),
-            }).then(() => {
+                car: user.car
+            }).then(user => {
                 console.log('User has been registered')
 
                 resolve({
                     status: 201,
-                    message: 'User has been registered'
+                    body: {
+                        message: 'User has been registered',
+                        user: user
+                    }
                 })
             }).catch(() => {
                 console.log('User already exists')

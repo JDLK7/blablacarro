@@ -7,3 +7,5 @@ app.use('/api', api)
 app.listen(3000, function(){
     console.log('Server started!')
 })
+
+module.exports = app

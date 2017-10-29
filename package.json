@@ -4,7 +4,7 @@
   "description": "App para compartir carro con otros usuarios",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,10 @@
     "moment": "^2.19.1",
     "pouchdb": "^6.3.4",
     "pouchdb-find": "^6.3.4"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1",
+    "superagent": "^3.8.0",
+    "supertest": "^3.0.0"
   }
 }

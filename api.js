@@ -21,6 +21,7 @@ function checkToken(authHeader) {
     jwt.decode(token, secret)
 }
 
+//Tested
 router.post('/login', (req, res) => {
     var data = req.body
 
@@ -50,6 +51,7 @@ router.post('/login', (req, res) => {
     })
 })
 
+//Tested
 router.get('/users', (req, res) => {
     User.fetchAll().then(result => {
         var response = []
@@ -71,6 +73,7 @@ router.get('/users', (req, res) => {
     })
 })
 
+//Tested
 router.post('/users', (req, res) => {
     var user = req.body
     
@@ -104,6 +107,7 @@ router.post('/users', (req, res) => {
     }
 })
 
+//Tested
 router.get('/users/:id', (req, res) => {
     var id = req.params.id
 
@@ -131,6 +135,7 @@ router.get('/users/:id', (req, res) => {
     })
 })
 
+//Tested
 router.get('/users/:id/journeys', (req, res) => {
     var id = req.params.id
     
@@ -152,6 +157,7 @@ router.get('/users/:id/journeys', (req, res) => {
     })
 })
 
+//Tested
 router.get('/cities', (req, res) => {
     City.fetchAll().then(result => {
         var response = []
@@ -173,6 +179,7 @@ router.get('/cities', (req, res) => {
     })
 })
 
+//Tested
 router.get('/cities/:id', (req, res) => {
     City.find(req.params.id).then(result => {
         result.city._links = {
@@ -186,6 +193,7 @@ router.get('/cities/:id', (req, res) => {
     })
 })
 
+//Tested
 router.get('/cities/:id/journeys', (req, res) => {
     var id = req.params.id
 
@@ -207,6 +215,7 @@ router.get('/cities/:id/journeys', (req, res) => {
     })
 })
 
+//Tested
 router.get('/cars', (req, res) => {
     Car.fetchAll().then(result => {
         res.status(result.status)
@@ -217,6 +226,7 @@ router.get('/cars', (req, res) => {
     })
 })
 
+//Tested
 router.get('/journeys', (req, res) => {
     
     try {
@@ -234,6 +244,7 @@ router.get('/journeys', (req, res) => {
     })
 })
 
+//Tested
 router.get('/journeys/:id', (req, res) => {
 
     try {
@@ -245,11 +256,16 @@ router.get('/journeys/:id', (req, res) => {
     }
 
     Journey.find(req.params.id).then(result => {
+        if(!result.journey) {
+            res.status(404)
+            res.send('Journey does not exist')
+        }
         res.status(result.status)
         res.send(result.journey)
     })
 })
 
+//Tested
 router.post('/journeys', (req, res) => {
     var data = req.body
 
@@ -284,7 +300,16 @@ router.post('/journeys', (req, res) => {
     
             journey.save().then(result => {
                 res.status(result.status)
-                res.send(result.journey)
+                
+                delete result.status
+                result.message = 'Journey has been registered'
+                result._links = {
+                    journey: {
+                        href: '/api/journeys/' + result.journey.id
+                    }
+                }
+
+                res.send(result)
             }).catch(err => {
                 res.status(err.status)
                 res.send(err.message)
@@ -302,6 +327,7 @@ router.post('/journeys', (req, res) => {
     }
 })
 
+//Tested
 router.delete('/journeys/:id', (req, res) => {
     var id = req.params.id
 

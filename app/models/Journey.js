@@ -52,7 +52,7 @@ Journey.find = id => {
         }).then(result => {
             resolve({
                 status: 200,
-                journey: result.docs
+                journey: result.docs[0]
             })
         })
     })

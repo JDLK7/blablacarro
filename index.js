@@ -4,7 +4,7 @@ var app = express()
 var api = require('./api')
 app.use('/api', api)
 
-app.listen(3000, function(){
+app.listen(80, function(){
     console.log('Server started!')
 })
 

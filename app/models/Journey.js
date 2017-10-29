@@ -17,10 +17,14 @@ class Journey {
     save() {
         var data = this
 
+        var departureCity = data.cities[0]
+        var destinationCity = data.cities[data.cities.length-1]
+
         return new Promise((resolve, reject) => {
             db.post({
                 type: 'journey',
-                originCities: data.cities,
+                departureCity: departureCity,
+                destinationCity: destinationCity,
                 driver: data.driver,
                 occupants: data.occupants,
                 price: data.price
@@ -58,7 +62,13 @@ Journey.fetchAll = () => {
     return new Promise((resolve, reject) => {
         db.find({
             selector: { type: 'journey' },
-            fields: ['_id', 'cities', 'occupants', 'price']
+            fields: [
+                '_id',
+                'departureCity',
+                'destinationCity',
+                'occupants',
+                'price'
+            ]
         }).then(result => {
             resolve({
                 status: 200,
@@ -98,7 +108,13 @@ Journey.getDriverJourneys = id => {
                 type: 'journey',
                 driver: id,
             },
-            fields: ['_id', 'cities', 'occupants', 'price']
+            fields: [
+                '_id',
+                'departureCity',
+                'destinationCity',
+                'occupants',
+                'price'
+            ]
         }).then(result => {
             resolve({
                 status: 200,
@@ -112,18 +128,24 @@ Journey.getDriverJourneys = id => {
         })
     })
 }
-/*
+
 Journey.getCityJourneys = id => {
     return new Promise((resolve, reject) => {
         db.find({
             selector: {
                 type: 'journey',
                 $or: [
-                    { cities: 'nice' },
-                    { cities: 'ok' }
+                    { departureCity: id },
+                    { destinationCity: id }
                 ] 
             },
-            fields: ['_id', 'cities', 'occupants', 'price']
+            fields: [
+                '_id',
+                'departureCity',
+                'destinationCity',
+                'occupants',
+                'price'
+            ]
         }).then(result => {
             resolve({
                 status: 200,
@@ -136,6 +158,6 @@ Journey.getCityJourneys = id => {
             })
         })
     })
-}*/
+}
 
 module.exports = Journey

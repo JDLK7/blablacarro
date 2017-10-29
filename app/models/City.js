@@ -41,7 +41,7 @@ City.find = id => {
         }).then(result => {
             resolve({
                 status: 200,
-                city: result.docs
+                city: result.docs[0]
             })
         })
     })

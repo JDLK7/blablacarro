@@ -77,7 +77,7 @@ Car.find = id => {
         }).then(result => {
             resolve({
                 status: 200,
-                car: result.docs
+                car: result.docs[0]
             })
         })
     })

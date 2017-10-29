@@ -84,6 +84,9 @@ router.post('/users', (req, res) => {
                 response._links = {
                     user: {
                         href: '/api/users/' + response.user.id
+                    },
+                    login: {
+                        href: '/api/login'
                     }
                 }
 
@@ -174,8 +177,8 @@ router.get('/cities/:id', (req, res) => {
     City.find(req.params.id).then(result => {
         result.city._links = {
             journeys: {
-                href: '/api/cities/'+result.city._id+'/journeys'
-            }
+                href: '/api/cities/' + result.city._id + '/journeys'
+            },
         }
 
         res.status(result.status)

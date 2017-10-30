@@ -21,7 +21,30 @@ function checkToken(authHeader) {
     jwt.decode(token, secret)
 }
 
-//Tested
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     description: Login de la aplicación.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: login
+ *         description: Nombre de usuario y contraseña para iniciar sesion.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           properties:
+ *             login:
+ *               type: string
+ *             password:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Login correcto.
+ *       401:
+ *         description: Usuario o contraseña incorrectos.
+ */
 router.post('/login', (req, res) => {
     var data = req.body
 
@@ -51,7 +74,19 @@ router.post('/login', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/users:
+ *  get:
+ *    description: Listado de usuarios registrados.
+ *    produces: 
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: Se listan los usuarios correctamente.
+ *      500:
+ *        description: Se ha producido al recuperar los usuarios de la BD.
+ */
 router.get('/users', (req, res) => {
     User.fetchAll().then(result => {
         var response = []
@@ -73,7 +108,33 @@ router.get('/users', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/users:
+ *   post:
+ *     description: Creación de usuario nuevo.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: login
+ *         description: Nombre de usuario y contraseña para crear el usuario.
+ *         in: body
+ *         required: true
+ *         type: string
+ *         schema:
+ *           properties:
+ *             login:
+ *               type: string
+ *             password:
+ *               type: string
+ *     responses:
+ *       201:
+ *         description: Usuario creado correctamente.
+ *       400:
+ *         description: Petición erronea.
+ *       409:
+ *         description: El usuario ya existe.
+ */
 router.post('/users', (req, res) => {
     var user = req.body
     
@@ -107,7 +168,32 @@ router.post('/users', (req, res) => {
     }
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     description: Recupera la información de un usuario.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID del usuario.
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Usuario encontrado.
+ *       401:
+ *         description: Error de autenticación.
+ *       404:
+ *         description: Usuario no encontrado.
+ */
 router.get('/users/:id', (req, res) => {
     var id = req.params.id
 
@@ -131,11 +217,36 @@ router.get('/users/:id', (req, res) => {
         res.send(result.user)
     }).catch(err => {
         res.status(err.status)
-        res.send(err.message)
+        res.send({
+            message: err.message
+        })
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/users/{id}/journeys:
+ *   get:
+ *     description: Listado de los viajes publicados por un usuario.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID del usuario.
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Se listan los viajes del usuario correctamente.
+ *       401:
+ *         description: Error de autenticación.
+ */
 router.get('/users/:id/journeys', (req, res) => {
     var id = req.params.id
     
@@ -157,7 +268,19 @@ router.get('/users/:id/journeys', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/cities:
+ *  get:
+ *    description: Listado de ciudades autogeneradas.
+ *    produces: 
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: Se listan las ciudades correctamente.
+ *      500:
+ *        description: Se ha producido al recuperar las ciudades de la BD.
+ */
 router.get('/cities', (req, res) => {
     City.fetchAll().then(result => {
         var response = []
@@ -179,7 +302,25 @@ router.get('/cities', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/cities/{id}:
+ *   get:
+ *     description: Recupera la información de una ciudad.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID de la ciudad.
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Ciudad encontrada.
+ *       404:
+ *         description: Ciudad no encontrado.
+ */
 router.get('/cities/:id', (req, res) => {
     City.find(req.params.id).then(result => {
         result.city._links = {
@@ -190,10 +331,38 @@ router.get('/cities/:id', (req, res) => {
 
         res.status(result.status)
         res.send(result.city)
+    }).catch(err => {
+        res.status(err.status)
+        res.send({
+            message: err.message
+        })
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/cities/{id}/journeys:
+ *   get:
+ *     description: Listado de los viajes publicados que pasan por una ciudad.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID de la ciudad.
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Se listan los viajes de la ciudad correctamente.
+ *       401:
+ *         description: Error de autenticación.
+ */
 router.get('/cities/:id/journeys', (req, res) => {
     var id = req.params.id
 
@@ -215,7 +384,19 @@ router.get('/cities/:id/journeys', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/cars:
+ *  get:
+ *    description: Listado de carros autogeneradas.
+ *    produces: 
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: Se listan los carros correctamente.
+ *      500:
+ *        description: Se ha producido al recuperar los carros de la BD.
+ */
 router.get('/cars', (req, res) => {
     Car.fetchAll().then(result => {
         res.status(result.status)
@@ -226,7 +407,27 @@ router.get('/cars', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/journeys:
+ *  get:
+ *    description: Listado de todos los viajes.
+ *    produces: 
+ *      - application/json
+ *    parameters:
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *    responses:
+ *      200:
+ *        description: Se listan las ciudades correctamente.
+ *      401:
+ *        description: Error de autenticación.
+ *      500:
+ *        description: Se ha producido al recuperar los usuarios de la BD.
+ */
 router.get('/journeys', (req, res) => {
     
     try {
@@ -244,7 +445,32 @@ router.get('/journeys', (req, res) => {
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/journeys/{id}:
+ *   get:
+ *     description: Recupera la información de un viaje.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID del viaje.
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Viaje encontrado.
+ *       401:
+ *         description: Error de autenticación.
+ *       404:
+ *         description: Viaje no encontrado.
+ */
 router.get('/journeys/:id', (req, res) => {
 
     try {
@@ -258,14 +484,50 @@ router.get('/journeys/:id', (req, res) => {
     Journey.find(req.params.id).then(result => {
         if(!result.journey) {
             res.status(404)
-            res.send('Journey does not exist')
+            res.send({
+                message: 'Journey does not exist'
+            })
         }
         res.status(result.status)
         res.send(result.journey)
     })
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/journeys:
+ *   post:
+ *     description: Creación de un viaje nuevo.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: data
+ *         description: Datos del viaje a crear.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           properties:
+ *             cities:
+ *               type: array
+ *             driver:
+ *               type: string
+ *             occupants:
+ *               type: array
+ *             price:
+ *               type: integer
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       201:
+ *         description: Viaje creado correctamente.
+ *       401:
+ *         description: Error de autenticación.
+ *       400:
+ *         description: Faltan datos para crear el viaje.
+ */
 router.post('/journeys', (req, res) => {
     var data = req.body
 
@@ -327,7 +589,30 @@ router.post('/journeys', (req, res) => {
     }
 })
 
-//Tested
+/**
+ * @swagger
+ * /api/journeys/{id}:
+ *   delete:
+ *     description: Borrado de un viaje.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: ID del viaje.
+ *         in: path
+ *         required: true
+ *         type: string
+ *       - name: Authorization
+ *         description: JSON web token
+ *         in: header
+ *         required: true
+ *         type: string
+ *     responses:
+ *       204:
+ *         description: Viaje borrado correctamente.
+ *       401:
+ *         description: Error de autenticación.
+ */
 router.delete('/journeys/:id', (req, res) => {
     var id = req.params.id
 

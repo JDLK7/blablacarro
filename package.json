@@ -24,7 +24,8 @@
     "jwt-simple": "^0.5.1",
     "moment": "^2.19.1",
     "pouchdb": "^6.3.4",
-    "pouchdb-find": "^6.3.4"
+    "pouchdb-find": "^6.3.4",
+    "swagger-jsdoc": "^1.9.7"
   },
   "devDependencies": {
     "mocha": "^4.0.1",

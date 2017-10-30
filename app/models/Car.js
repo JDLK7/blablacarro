@@ -58,7 +58,7 @@ function generateData() {
         }).then(() => {
             console.log('Coche autogenerado')
         }).catch(err => {
-            console.log('El coche ya existe')
+            
         })
     }
 }

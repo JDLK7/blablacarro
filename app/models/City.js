@@ -18,7 +18,7 @@ function generateData() {
         }).then(() => {
             console.log('Ciudades autogeneradas')
         }).catch(err => {
-            console.log('La ciudad ya existe')
+            
         })
     }
 }
@@ -34,11 +34,17 @@ class City {
 }
 
 City.find = id => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         db.find({
             selector: { type: 'city', _id: id },
             fields: ['_id', 'name', 'zipCode', 'state']
         }).then(result => {
+            if(result.docs.length == 0) {
+                reject({
+                    status: 404,
+                    message: 'City does not exist'
+                })
+            }
             resolve({
                 status: 200,
                 city: result.docs[0]
